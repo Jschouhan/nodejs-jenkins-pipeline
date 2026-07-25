@@ -154,3 +154,4 @@ Each of these is a common real-world Jenkins-on-Windows setup issue, not a
 problem with the pipeline logic itself — the `Jenkinsfile` stages were correct
 throughout; the environment just needed the right tools installed and visible
 to the Jenkins service.
+ || Successful Done ||
