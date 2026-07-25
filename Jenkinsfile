@@ -37,23 +37,25 @@ pipeline {
             }
         }
 
+        stage('Push to Docker Hub') {
+            steps {
+                echo 'Pushing image to Docker Hub...'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh """
+                        echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
+                        docker tag ${IMAGE_NAME}:latest \$DOCKER_USER/${IMAGE_NAME}:latest
+                        docker push \$DOCKER_USER/${IMAGE_NAME}:latest
+                    """
+                }
+            }
+        }
+
         stage('Deploy') {
             steps {
                 echo 'Deploying application...'
                 sh """
                     docker rm -f ${CONTAINER_NAME} || true
                     docker run -d --name ${CONTAINER_NAME} -p ${APP_PORT}:${APP_PORT} ${IMAGE_NAME}:latest
-                """
-            }
-        }
-    }
-      stage('Push to Docker Hub') {
-           steps {
-              withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-               sh """
-                    echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
-                    docker tag ${IMAGE_NAME}:latest \$DOCKER_USER/${IMAGE_NAME}:latest
-                    docker push \$DOCKER_USER/${IMAGE_NAME}:latest
                 """
             }
         }
