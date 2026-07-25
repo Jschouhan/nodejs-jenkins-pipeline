@@ -1,0 +1,295 @@
+Started by an SCM change
+Obtained Jenkinsfile from git https://github.com/Jschouhan/nodejs-jenkins-pipeline.git
+Running on Jenkins
+ in C:\ProgramData\Jenkins\.jenkins\workspace\pipeline
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+using credential github-creds
+ > git.exe rev-parse --resolve-git-dir C:\ProgramData\Jenkins\.jenkins\workspace\pipeline\.git # timeout=10
+Fetching changes from the remote Git repository
+ > git.exe config remote.origin.url https://github.com/Jschouhan/nodejs-jenkins-pipeline.git # timeout=10
+Fetching upstream changes from https://github.com/Jschouhan/nodejs-jenkins-pipeline.git
+ > git.exe --version # timeout=10
+ > git --version # 'git version 2.54.0.windows.1'
+using GIT_ASKPASS to set credentials 
+ > git.exe fetch --tags --force --progress -- https://github.com/Jschouhan/nodejs-jenkins-pipeline.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git.exe rev-parse "refs/remotes/origin/main^{commit}" # timeout=10
+Checking out Revision 9f3c8b3189b2a3259eec6b4509d71085c1cc6787 (refs/remotes/origin/main)
+ > git.exe config core.sparsecheckout # timeout=10
+ > git.exe checkout -f 9f3c8b3189b2a3259eec6b4509d71085c1cc6787 # timeout=10
+Commit message: "Delete screenshots directory"
+ > git.exe rev-list --no-walk f6b901c25b004f82973523e1c0570633c1b2cf09 # timeout=10
+Checking out source code...
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+using credential github-creds
+ > git.exe rev-parse --resolve-git-dir C:\ProgramData\Jenkins\.jenkins\workspace\pipeline\.git # timeout=10
+Fetching changes from the remote Git repository
+ > git.exe config remote.origin.url https://github.com/Jschouhan/nodejs-jenkins-pipeline.git # timeout=10
+Fetching upstream changes from https://github.com/Jschouhan/nodejs-jenkins-pipeline.git
+ > git.exe --version # timeout=10
+ > git --version # 'git version 2.54.0.windows.1'
+using GIT_ASKPASS to set credentials 
+ > git.exe fetch --tags --force --progress -- https://github.com/Jschouhan/nodejs-jenkins-pipeline.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git.exe rev-parse "refs/remotes/origin/main^{commit}" # timeout=10
+Checking out Revision 9f3c8b3189b2a3259eec6b4509d71085c1cc6787 (refs/remotes/origin/main)
+ > git.exe config core.sparsecheckout # timeout=10
+ > git.exe checkout -f 9f3c8b3189b2a3259eec6b4509d71085c1cc6787 # timeout=10
+Commit message: "Delete screenshots directory"
+Installing Node.js dependencies...
+
+C:\ProgramData\Jenkins\.jenkins\workspace\pipeline>npm install 
+
+up to date, audited 356 packages in 4s
+
+50 packages are looking for funding
+  run `npm fund` for details
+
+20 high severity vulnerabilities
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+Running tests...
+
+C:\ProgramData\Jenkins\.jenkins\workspace\pipeline>npm test 
+
+> jenkins-demo@1.0.0 test
+> jest
+
+PASS ./app.test.js
+  √ GET / returns 200 (63 ms)
+  √ GET /health returns ok status (24 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        1.588 s, estimated 3 s
+Ran all test suites.
+Building Docker image...
+
+C:\ProgramData\Jenkins\.jenkins\workspace\pipeline>docker build -t jenkins-demo:latest . 
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  185.3kB
+
+Step 1/7 : FROM node:20-alpine
+ ---> fb4cd12c85ee
+Step 2/7 : WORKDIR /usr/src/app
+ ---> Using cache
+ ---> 6f765058839b
+Step 3/7 : COPY package*.json ./
+ ---> Using cache
+ ---> 6602f2844d40
+Step 4/7 : RUN npm install --production
+ ---> Using cache
+ ---> 8be2a08c2831
+Step 5/7 : COPY . .
+ ---> Using cache
+ ---> dd162327d2e0
+Step 6/7 : EXPOSE 3000
+ ---> Using cache
+ ---> 06db66327c8c
+Step 7/7 : CMD ["node", "app.js"]
+ ---> Running in 08a9d9f035e9
+ ---> Removed intermediate container 08a9d9f035e9
+ ---> 7affcfe9664a
+Successfully built 7affcfe9664a
+Successfully tagged jenkins-demo:latest
+Pushing image to Docker Hub...
+Masking supported pattern matches of %DOCKER_PASS%
+
+C:\ProgramData\Jenkins\.jenkins\workspace\pipeline>echo ****  | docker login -u jstech06 --password-stdin 
+Login Succeeded
+
+C:\ProgramData\Jenkins\.jenkins\workspace\pipeline>docker tag jenkins-demo:latest jstech06/jenkins-demo:latest 
+
+C:\ProgramData\Jenkins\.jenkins\workspace\pipeline>docker push jstech06/jenkins-demo:latest 
+The push refers to repository [docker.io/jstech06/jenkins-demo]
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+6bb4c380db1e: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+f7bb7b7d28a5: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+6fefbbb86208: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Waiting
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+6fefbbb86208: Layer already exists
+f7bb7b7d28a5: Waiting
+6bb4c380db1e: Layer already exists
+b2cbbfe903b0: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+f7bb7b7d28a5: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+f7bb7b7d28a5: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+f7bb7b7d28a5: Waiting
+b2cbbfe903b0: Waiting
+fff4e2c1b189: Layer already exists
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+f7bb7b7d28a5: Waiting
+b2cbbfe903b0: Waiting
+f7bb7b7d28a5: Waiting
+b2cbbfe903b0: Waiting
+6a0ac1617861: Waiting
+4feea04c1543: Waiting
+07079714fb44: Waiting
+07079714fb44: Layer already exists
+f7bb7b7d28a5: Layer already exists
+b2cbbfe903b0: Layer already exists
+6a0ac1617861: Layer already exists
+4feea04c1543: Waiting
+4feea04c1543: Layer already exists
+latest: digest: sha256:7affcfe9664ab25638d1b6bd4496ae5af036967795e4559c3923a40a052e764f size: 2058
+Deploying application...
+
+C:\ProgramData\Jenkins\.jenkins\workspace\pipeline>docker rm -f jenkins-demo-app   2>nul  || echo No existing container 
+jenkins-demo-app
+
+C:\ProgramData\Jenkins\.jenkins\workspace\pipeline>docker run -d --name jenkins-demo-app -p 3000:3000 jenkins-demo:latest 
+a7cbfad808d35c64e4d16d612943f69b54de50ab8bcf10697d2d7837e85333c1
+Pipeline finished.
+Pipeline completed successfully! App is running.
+Finished: SUCCESS
