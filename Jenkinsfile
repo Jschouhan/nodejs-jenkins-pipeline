@@ -18,22 +18,14 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo 'Installing Node.js dependencies...'
-                script {
-                    docker.image('node:20-alpine').inside {
-                        sh 'npm install'
-                    }
-                }
+                sh 'npm install'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                script {
-                    docker.image('node:20-alpine').inside {
-                        sh 'npm test || echo "No tests configured, skipping"'
-                    }
-                }
+                sh 'npm test || echo "No tests configured, skipping"'
             }
         }
 
@@ -57,7 +49,14 @@ pipeline {
     }
 
     post {
-        success { echo "Pipeline completed successfully." }
-        failure { echo "Pipeline failed. Check the stage logs above." }
+        success {
+            echo "Pipeline completed successfully. App deployed as ${CONTAINER_NAME}."
+        }
+        failure {
+            echo "Pipeline failed. Check the stage logs above."
+        }
+        always {
+            echo "Build ${env.BUILD_NUMBER} finished with status: ${currentBuild.currentResult}"
+        }
     }
 }
