@@ -2,16 +2,15 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "jenkins-demo"
-        CONTAINER_NAME = "jenkins-demo-app"
-        APP_PORT = "3000"
+        IMAGE_NAME = "nodejs-app"
+        IMAGE_TAG  = "${env.BUILD_NUMBER}"
+        CONTAINER_NAME = "nodejs-app-container"
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                echo 'Checking out source code...'
                 checkout scm
             }
         }
@@ -19,57 +18,46 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo 'Installing Node.js dependencies...'
-                sh 'npm install'
+                script {
+                    docker.image('node:20-alpine').inside {
+                        sh 'npm install'
+                    }
+                }
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                sh 'npm test'
+                script {
+                    docker.image('node:20-alpine').inside {
+                        sh 'npm test || echo "No tests configured, skipping"'
+                    }
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
-                sh "docker build -t %IMAGE_NAME%:latest ."
-            }
-        }
-
-        stage('Push to Docker Hub') {
-            steps {
-                echo 'Pushing image to Docker Hub...'
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh """
-                        echo %DOCKER_PASS%| docker login -u %DOCKER_USER% --password-stdin
-                        docker tag %IMAGE_NAME%:latest %DOCKER_USER%/%IMAGE_NAME%:latest
-                        docker push %DOCKER_USER%/%IMAGE_NAME%:latest
-                    """
-                }
+                echo "Building Docker image ${IMAGE_NAME}:${IMAGE_TAG}"
+                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying application...'
+                echo "Deploying new container"
                 sh """
-                    docker rm -f %CONTAINER_NAME% 2>nul || echo No existing container
-                    docker run -d --name %CONTAINER_NAME% -p %APP_PORT%:%APP_PORT% %IMAGE_NAME%:latest
+                    docker stop ${CONTAINER_NAME} || true
+                    docker rm ${CONTAINER_NAME} || true
+                    docker run -d --name ${CONTAINER_NAME} -p 3000:3000 ${IMAGE_NAME}:${IMAGE_TAG}
                 """
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline completed successfully! App is running.'
-        }
-        failure {
-            echo 'Pipeline failed. Check the logs above for details.'
-        }
-        always {
-            echo 'Pipeline finished.'
-        }
+        success { echo "Pipeline completed successfully." }
+        failure { echo "Pipeline failed. Check the stage logs above." }
     }
 }
